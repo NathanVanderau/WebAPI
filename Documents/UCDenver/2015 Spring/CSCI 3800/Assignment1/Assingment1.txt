@@ -1,0 +1,67 @@
+Nathan Vanderau
+
+REST request Headers
+No additional HTTP request headers displayed on the Request > Headers tab, but I can see the following information in the Raw view:
+GET https://www.googleapis.com/books/v1/volumes?q=turing HTTP/1.1. This is getting or requesting a JSON object back from googleapis.com that has "turing" in the name.
+1) Accept-Encoding: gzip,deflate. This lists acceptable encodings for the response.
+2) Host: www.googleapis.com. This is the host of the data.
+3) Connection: Keep-Alive. This keeps the connection open for subsequent requests.
+4) User-Agent: Apache-HttpClient/4.1.1 (java 1.5). This is the user agent string of the user agent.
+
+REST response Headers
+There are 14 response headers:
+1) ETag responds with "_rmWcTkH-s1QFjg0mC3XeI0FZSQ/gJIX7X5fuhQunJhy7nw4svzBJks". This is one of the ways that HTTP handles web cache validation, and will only resend the full response if the content has changed. 
+2) Content-Length responds with 26982. This tells the browser the decimal number of octets in the response.
+3) #status# responds with HTTP/1.1 200 OK. This is telling the browser that the response is HTTP version 1.1, with a response code of 200 OK.
+4) X-XSS-Protection responds with 1; mode=block. This is a non-standard response field. The "1" means that the XSS filter is TRUE and the mode is set to block.
+5) Expires responds with Mon, 09 Feb 2015 03:45:38 GMT. This is pretty self explanatory and means that the response expires at the date and time listed.
+6) Alternate-Protocol responds with 443:quic,p=0.02. This tells the browser that it may also use a different protocol. This is specifically stating that the request and response may go over port 443 (HTTPS) using Google's QUIC protocol. This protocol is experimental and is early only handled by Opera and Chrome. Other browsers ignore this field.
+7) Server responds with GSE. This is a name for the server.
+8) X-Content-Type-Options responds with nosniff. This is a non-standard response field with the only currently defined option as "nosniff". This tells the browser not to sniff the byte stream to determine metadata.
+9) Cache-Control responds with private, max-age=0, must-revalidate, no-transform. This is telling the CDNs that the request is specific to a user (private), it's max age (in seconds) is 0 (basically overrides the "Expires" header and tells the cache that the artifact expires after x seconds), overrides any configuration in which the cache would serve up stale content (must-revalidate), and prevents the CDNs from "optimizing" (transforming) your content. no-transform is highly suggested to be included in your headers.
+10) X-Frame-Options responds with SAMEORIGIN. This response is in here to prevent clickjacking, and with this setting, will only render content if it comes from the same origin.
+11) Vary responds with Origin. I'm not sure why this isn't set to "*" since we're intentionally not caching anything and WANT the subsequent requests to be revalidated by the server.
+12) Vary also responds with X-Origin. I'm not sure why this isn't set to "*" since we're intentionally not caching anything and WANT the subsequent requests to be revalidated by the server.
+13) Date responds with Mon, 09 Feb 2015 03:45:38 GMT. This is the date and time that the request was sent.
+14) Content-Type responds with application/json; charset=UTF-8. This is the media type of the response. Here, we can see that we are getting a JSON object back that has UTF-8 encoding.
+
+
+SOAP Request Headers
+Again, no additional HTTP request headers, but I can see the following info in the request:
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://www.webservicex.net/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:GetGeoIP>
+         <!--Optional:-->
+      <web:IPAddress>212.58.246.92</web:IPAddress></web:GetGeoIP>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+So this is defining the <soapenv> as the Envelope using the XML namespace schema that can be found at http://schemas.xmlsoap.org/soap/envelope/
+This has an empty header, and the body contains the binding web to GetGeoIP of the IP address. That concludes the body.
+
+SOAP response 
+The XML:
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <GetGeoIPResponse xmlns="http://www.webservicex.net/">
+         <GetGeoIPResult>
+            <ReturnCode>1</ReturnCode>
+            <IP>212.58.246.92</IP>
+            <ReturnCodeDetails>Success</ReturnCodeDetails>
+            <CountryName>United Kingdom</CountryName>
+            <CountryCode>GBR</CountryCode>
+         </GetGeoIPResult>
+      </GetGeoIPResponse>
+   </soap:Body>
+</soap:Envelope>
+1) X-AspNet-Version responds with 4.0.30319. This is daily obvious, and is telling you the version of ASP.NET that the server is using.
+2) Vary responds with Accept-Encoding. This will accept the encoded (compressed) data that you requested. Probably gzip, as deflate is antiquated, and sdch is only used by Google.
+3) Date responds with Mon, 09 Feb 2015 06:24:20 GMT. This is the date and time that the request was sent.
+4) Content-Length responds with 403. This tells the browser the decimal number of octets in the response.
+5) #status# responds with HTTP/1.1 200 OK.  This is telling the browser that the response is HTTP version 1.1, with a response code of 200 OK
+6) Content-Encoding responds with gzip. This is the encoding that is being used.
+7) Content-Type responds with text/xml; charset=utf-8. This is stating that the file is an XML using UTF-8.
+8) Server responds with Microsoft-IIS/7.0. This is the server name.
+9) X-Powered-By responds with ASP.NET. This is technology supporting the web application.
+10) Cache-Control responds with private, max-age=0. Much less detail than above, but this tells the CDNs not to cache this data (as it is unique to the user), and that it expires after 0 seconds.
